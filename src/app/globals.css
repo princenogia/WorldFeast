@@ -1,26 +1,557 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Theme Colors */
+  --background: #fafafa;
+  --background-secondary: #ffffff;
+  --foreground: #1a1a2e;
+  --foreground-secondary: #4a4a68;
+  --accent: #ff6b6b;
+  --accent-secondary: #4ecdc4;
+  --accent-gradient: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.08);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --header-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] {
+  --background: #0a0a0f;
+  --background-secondary: #12121a;
+  --foreground: #f5f5f7;
+  --foreground-secondary: #a0a0b0;
+  --accent: #ff6b6b;
+  --accent-secondary: #4ecdc4;
+  --accent-gradient: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+  --card-bg: #1a1a25;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --header-bg: rgba(10, 10, 15, 0.85);
+  --glass-bg: rgba(26, 26, 37, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Playfair Display", serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
+}
+
+/* Utility Classes */
+.gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-effect {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Animation Keyframes */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 107, 107, 0.5);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Performance-optimized card animations */
+.card-hover {
+  transform: translateY(0) translateZ(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px) translateZ(0);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Image zoom on hover - GPU accelerated */
+.img-zoom {
+  transform: scale(1) translateZ(0);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.group:hover .img-zoom {
+  transform: scale(1.1) translateZ(0);
+}
+
+/* Fade in animation for cards */
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(30px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+.recipe-card-enter {
+  animation: cardEnter 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+  opacity: 1;
+}
+
+/* Optimized section fade in */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .img-zoom,
+  .recipe-card-enter,
+  .fade-in-up {
+    animation: none;
+    transition: none;
+  }
+
+  .card-hover:hover {
+    transform: none;
+  }
+
+  .group:hover .img-zoom {
+    transform: none;
+  }
+}
+
+/* ========================================
+   Voice Assistant Premium Animations
+   ======================================== */
+
+/* Microphone button pulsing glow when listening */
+@keyframes voicePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7),
+      0 0 0 0 rgba(255, 107, 107, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(255, 107, 107, 0),
+      0 0 30px 5px rgba(255, 107, 107, 0.3);
+  }
+}
+
+@keyframes voicePulseRing {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Sound wave bars animation */
+@keyframes soundWave {
+  0%,
+  100% {
+    height: 4px;
+  }
+  50% {
+    height: 20px;
+  }
+}
+
+@keyframes soundWaveAlt {
+  0%,
+  100% {
+    height: 8px;
+  }
+  50% {
+    height: 24px;
+  }
+}
+
+/* Ripple effect on button click */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Microphone icon bounce */
+@keyframes micBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-3px);
+  }
+  75% {
+    transform: translateY(2px);
+  }
+}
+
+/* Panel slide in animation */
+@keyframes voicePanelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Smooth expand/collapse for panel content */
+@keyframes voiceContentExpand {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+  }
+}
+
+/* Glow border animation */
+@keyframes glowBorder {
+  0%,
+  100% {
+    border-color: rgba(255, 107, 107, 0.5);
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.2);
+  }
+  50% {
+    border-color: rgba(78, 205, 196, 0.5);
+    box-shadow: 0 0 30px rgba(78, 205, 196, 0.3);
+  }
+}
+
+/* Floating animation for the voice panel */
+@keyframes voiceFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* CSS Classes for Voice Assistant */
+.voice-panel {
+  animation: voicePanelSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.voice-panel-content {
+  animation: voiceContentExpand 0.3s ease-out forwards;
+  overflow: hidden;
+}
+
+.voice-btn-listening {
+  animation: voicePulse 1.5s ease-in-out infinite;
+  position: relative;
+}
+
+.voice-btn-listening::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #ff6b6b);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  z-index: -1;
+  opacity: 0.7;
+  filter: blur(8px);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.voice-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 107, 107, 0.6);
+  animation: voicePulseRing 1.5s ease-out infinite;
+}
+
+.voice-ring-delayed {
+  animation-delay: 0.5s;
+}
+
+/* Sound wave visualizer */
+.sound-wave-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 24px;
+}
+
+.sound-wave-bar {
+  width: 4px;
+  background: linear-gradient(180deg, #ff6b6b, #4ecdc4);
+  border-radius: 2px;
+  animation: soundWave 0.8s ease-in-out infinite;
+}
+
+.sound-wave-bar:nth-child(1) {
+  animation-delay: 0s;
+  height: 8px;
+}
+.sound-wave-bar:nth-child(2) {
+  animation-delay: 0.1s;
+  animation-name: soundWaveAlt;
+}
+.sound-wave-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.sound-wave-bar:nth-child(4) {
+  animation-delay: 0.3s;
+  animation-name: soundWaveAlt;
+}
+.sound-wave-bar:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.mic-icon {
+  animation: micBounce 0.6s ease-in-out;
+}
+
+.mic-icon-listening {
+  animation: micBounce 1s ease-in-out infinite;
+}
+
+/* Ripple effect container */
+.ripple-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  animation: ripple 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Active glow border for listening state */
+.voice-active-border {
+  animation: glowBorder 2s ease-in-out infinite;
+}
+
+/* Floating panel effect when listening */
+.voice-float-active {
+  animation: voiceFloat 3s ease-in-out infinite;
+}
+
+/* Status indicator dot */
+@keyframes statusPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+}
+
+.status-dot {
+  animation: statusPulse 1s ease-in-out infinite;
+}
+
+.status-dot-delayed-1 {
+  animation-delay: 0.15s;
+}
+
+.status-dot-delayed-2 {
+  animation-delay: 0.3s;
+}
+
+/* Command feedback slide in */
+@keyframes commandFeedbackIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.command-feedback {
+  animation: commandFeedbackIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Minimize/expand button rotation */
+.minimize-btn {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.minimize-btn:hover {
+  transform: rotate(90deg) scale(1.1);
+}
+
+.minimize-btn-expanded:hover {
+  transform: rotate(-90deg) scale(1.1);
+}
+
+/* Modern toggle switch for voice on/off */
+.voice-toggle {
+  position: relative;
+  width: 60px;
+  height: 32px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.voice-toggle::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: white;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.voice-toggle-on {
+  background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+}
+
+.voice-toggle-on::before {
+  transform: translateX(28px);
+}
+
+.voice-toggle-off {
+  background: var(--foreground-secondary);
+}
+
+/* Shimmer effect on listening panel */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.voice-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
 }
