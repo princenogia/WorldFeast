@@ -228,9 +228,9 @@ export default function Header() {
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               whileTap={{ scale: 0.95 }}
-              className="md:hidden w-10 h-10 flex flex-col items-center justify-center cursor-pointer"
+              className="md:hidden w-8 h-8 flex flex-col items-center justify-center cursor-pointer"
               style={{
-                gap: "10px",
+                gap: "6px",
               }}
               animate={{
                 rotate: isMobileMenuOpen ? 180 : 0,
@@ -245,7 +245,7 @@ export default function Header() {
                   position: isMobileMenuOpen ? "absolute" : "relative",
                 }}
                 transition={{ duration: 0.5 }}
-                className="h-1 rounded"
+                className="h-0.5 rounded"
                 style={{
                   background: "var(--foreground)",
                   width: isMobileMenuOpen ? "100%" : "70%",
@@ -256,7 +256,7 @@ export default function Header() {
                   scaleX: isMobileMenuOpen ? 0 : 1,
                 }}
                 transition={{ duration: isMobileMenuOpen ? 0.5 : 0.8 }}
-                className="w-full h-1 rounded"
+                className="w-full h-0.5 rounded"
                 style={{ background: "var(--foreground)" }}
               />
               <motion.span
@@ -266,7 +266,7 @@ export default function Header() {
                   position: isMobileMenuOpen ? "absolute" : "relative",
                 }}
                 transition={{ duration: 0.5 }}
-                className="h-1 rounded"
+                className="h-0.5 rounded"
                 style={{
                   background: "var(--foreground)",
                   width: isMobileMenuOpen ? "100%" : "70%",
@@ -304,12 +304,12 @@ export default function Header() {
                 <motion.button
                   onClick={() => setIsMobileMenuOpen(false)}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 flex flex-col items-center justify-center cursor-pointer relative"
+                  className="w-8 h-8 flex flex-col items-center justify-center cursor-pointer relative"
                   aria-label="Close menu"
                 >
                   <motion.span
                     initial={{ rotate: 45 }}
-                    className="absolute h-1 rounded"
+                    className="absolute h-0.5 rounded"
                     style={{
                       background: "var(--foreground)",
                       width: "100%",
@@ -318,7 +318,7 @@ export default function Header() {
                   />
                   <motion.span
                     initial={{ rotate: -45 }}
-                    className="absolute h-1 rounded"
+                    className="absolute h-0.5 rounded"
                     style={{
                       background: "var(--foreground)",
                       width: "100%",
