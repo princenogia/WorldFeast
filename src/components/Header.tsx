@@ -64,15 +64,16 @@ export default function Header() {
         style={{
           background: isScrolled
             ? theme === "dark"
-              ? "#0a0a0f"
-              : "#ffffff"
-            : "var(--header-bg)",
-          backdropFilter: isScrolled ? "none" : "blur(20px)",
-          borderBottom: "1px solid var(--card-border)",
+              ? "rgba(10, 10, 15, 0.95)"
+              : "rgba(255, 255, 255, 0.95)"
+            : "transparent",
+          backdropFilter: isScrolled ? "blur(12px)" : "none",
+          WebkitBackdropFilter: isScrolled ? "blur(12px)" : "none",
+          borderBottom: isScrolled ? "1px solid var(--card-border)" : "none",
           boxShadow: isScrolled ? "0 4px 20px rgba(0,0,0,0.15)" : "none",
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 py-4 md:py-4 pt-6 md:pt-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <motion.span
               className="text-3xl"
@@ -86,7 +87,17 @@ export default function Header() {
               style={{ fontFamily: "var(--font-serif)" }}
             >
               <span className="gradient-text">World</span>
-              <span style={{ color: "var(--foreground)" }}>Feast</span>
+              <span
+                style={{
+                  color: isScrolled
+                    ? theme === "dark"
+                      ? "var(--foreground)"
+                      : "#1a1a2e"
+                    : "white",
+                }}
+              >
+                Feast
+              </span>
             </span>
           </Link>
 
@@ -102,14 +113,20 @@ export default function Header() {
                 <Link
                   href={item.href}
                   className="relative text-sm font-medium transition-all duration-300 py-2 group whitespace-nowrap"
-                  style={{ color: "var(--foreground-secondary)" }}
+                  style={{
+                    color: isScrolled
+                      ? theme === "dark"
+                        ? "var(--foreground-secondary)"
+                        : "#333333"
+                      : "white",
+                  }}
                 >
-                  <span className="group-hover:text-[var(--accent)] transition-colors duration-300">
+                  <span className="group-hover:text-[#ff6b6b] transition-colors duration-300">
                     {item.name}
                   </span>
                   <span
                     className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
-                    style={{ background: "var(--accent)" }}
+                    style={{ background: "#ff6b6b" }}
                   />
                 </Link>
               </motion.div>
@@ -276,7 +293,7 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-72 z-50 md:hidden px-6"
+              className="fixed top-0 right-0 h-full w-[70%] z-50 md:hidden px-6"
               style={{
                 background: theme === "dark" ? "#0a0a0f" : "#ffffff",
                 borderLeft: "1px solid var(--card-border)",

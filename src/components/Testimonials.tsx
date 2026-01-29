@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Marquee } from "@/components/ui/marquee";
+import { Star, Quote } from "lucide-react";
 
 const testimonials = [
   {
@@ -9,7 +11,7 @@ const testimonials = [
     location: "San Francisco, USA",
     avatar: "👩‍🍳",
     rating: 5,
-    text: "WorldFeast has transformed my cooking! I've made dishes from 5 different continents this month alone. The recipes are authentic and easy to follow.",
+    text: "WorldFeast has transformed my cooking! I've made dishes from 5 different continents this month alone.",
   },
   {
     id: 2,
@@ -17,7 +19,7 @@ const testimonials = [
     location: "Milan, Italy",
     avatar: "👨‍🍳",
     rating: 5,
-    text: "As an Italian chef, I was skeptical. But the global recipes here are genuinely authentic. The Pad Thai recipe reminded me of my trip to Bangkok!",
+    text: "As an Italian chef, I was skeptical. But the global recipes here are genuinely authentic!",
   },
   {
     id: 3,
@@ -25,82 +27,139 @@ const testimonials = [
     location: "Lagos, Nigeria",
     avatar: "👩‍🦱",
     rating: 5,
-    text: "Finally, a platform that showcases African cuisine properly! The Jollof Rice recipe is spot-on. My grandmother would approve!",
+    text: "Finally, a platform that showcases African cuisine properly! The Jollof Rice recipe is spot-on.",
+  },
+  {
+    id: 4,
+    name: "Kenji Tanaka",
+    location: "Tokyo, Japan",
+    avatar: "🧑‍🍳",
+    rating: 5,
+    text: "The attention to detail in the Japanese recipes is impressive. True umami flavors!",
+  },
+  {
+    id: 5,
+    name: "Maria Garcia",
+    location: "Mexico City, Mexico",
+    avatar: "👩‍🦳",
+    rating: 5,
+    text: "From tacos to mole, every Mexican recipe reminds me of my grandmother's cooking.",
   },
 ];
+
+const TestimonialCard = ({
+  testimonial,
+}: {
+  testimonial: (typeof testimonials)[0];
+}) => (
+  <div
+    className="w-[350px] shrink-0 p-6 rounded-2xl mx-4 relative"
+    style={{
+      background: "var(--card-bg)",
+      border: "1px solid var(--card-border)",
+      boxShadow: "var(--card-shadow)",
+    }}
+  >
+    {/* Quote icon */}
+    <Quote
+      size={32}
+      className="absolute top-4 right-4 opacity-10"
+      style={{ color: "#ff6b6b" }}
+    />
+
+    {/* Rating */}
+    <div className="flex gap-0.5 mb-3">
+      {[...Array(testimonial.rating)].map((_, i) => (
+        <Star key={i} size={14} fill="#feca57" stroke="#feca57" />
+      ))}
+    </div>
+
+    {/* Quote */}
+    <p
+      className="text-sm leading-relaxed mb-4"
+      style={{ color: "var(--foreground-secondary)" }}
+    >
+      &ldquo;{testimonial.text}&rdquo;
+    </p>
+
+    {/* Author */}
+    <div className="flex items-center gap-3">
+      <span className="text-2xl">{testimonial.avatar}</span>
+      <div>
+        <p
+          className="font-semibold text-sm"
+          style={{ color: "var(--foreground)" }}
+        >
+          {testimonial.name}
+        </p>
+        <p className="text-xs" style={{ color: "var(--foreground-secondary)" }}>
+          {testimonial.location}
+        </p>
+      </div>
+    </div>
+  </div>
+);
 
 export default function Testimonials() {
   return (
     <section
       className="py-24 px-6 relative overflow-hidden"
-      style={{ background: "var(--accent)" }}
+      style={{ background: "var(--background-secondary)" }}
     >
-      {/* Decorative elements */}
-      <div className="absolute top-10 left-10 text-6xl opacity-20">🍜</div>
-      <div className="absolute bottom-10 right-10 text-6xl opacity-20">🥘</div>
-      <div className="absolute top-1/2 left-1/4 text-4xl opacity-10">🌶️</div>
+      {/* Decorative gradient orbs */}
+      <div
+        className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-20"
+        style={{
+          background: "linear-gradient(135deg, #ff6b6b 0%, #feca57 100%)",
+        }}
+      />
+      <div
+        className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl opacity-15"
+        style={{
+          background: "linear-gradient(135deg, #4ecdc4 0%, #44a8b3 100%)",
+        }}
+      />
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-full mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <span className="text-sm font-medium tracking-wider uppercase mb-4 block text-white/80">
+          <span
+            className="text-sm font-medium tracking-wider uppercase mb-4 block"
+            style={{ color: "#ff6b6b" }}
+          >
             What People Say
           </span>
           <h2
-            className="text-4xl md:text-5xl font-bold text-white"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="text-4xl md:text-5xl font-bold"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "var(--foreground)",
+            }}
           >
-            Loved by Food Enthusiasts
+            Loved by <span className="gradient-text">Food Enthusiasts</span>
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.15 }}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="p-8 rounded-3xl"
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.2)",
-              }}
-            >
-              {/* Rating */}
-              <div className="flex gap-1 mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <span key={i} className="text-yellow-300 text-lg">
-                    ★
-                  </span>
-                ))}
-              </div>
-
-              {/* Quote */}
-              <p className="text-white/90 leading-relaxed mb-6">
-                &ldquo;{testimonial.text}&rdquo;
-              </p>
-
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                <span className="text-3xl">{testimonial.avatar}</span>
-                <div>
-                  <p className="font-semibold text-white">{testimonial.name}</p>
-                  <p className="text-sm text-white/70">
-                    {testimonial.location}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
+        {/* First Marquee - Left direction */}
+        <Marquee direction="left" duration={40} repeat={4} className="mb-6">
+          {testimonials.map((testimonial) => (
+            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
           ))}
-        </div>
+        </Marquee>
+
+        {/* Second Marquee - Right direction */}
+        <Marquee direction="right" duration={45} repeat={4}>
+          {[...testimonials].reverse().map((testimonial) => (
+            <TestimonialCard
+              key={`rev-${testimonial.id}`}
+              testimonial={testimonial}
+            />
+          ))}
+        </Marquee>
       </div>
     </section>
   );

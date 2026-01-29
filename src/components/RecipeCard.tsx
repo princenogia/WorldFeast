@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Recipe } from "@/data/recipes";
 import { getRecipeImage } from "@/data/foodImages";
 import { useState } from "react";
+import { Clock } from "lucide-react";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -31,70 +33,62 @@ export default function RecipeCard({ recipe, index }: RecipeCardProps) {
   };
 
   return (
-    <div
-      className="recipe-card-enter"
-      style={{ animationDelay: `${index * 0.1}s` }}
-      suppressHydrationWarning
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.4, delay: index * 0.08 }}
     >
-      <Link href={`/recipe/${recipe.id}`}>
-        <article
-          className="rounded-2xl overflow-hidden cursor-pointer group card-hover"
+      <Link href={`/recipe/${recipe.id}`} className="block group">
+        <div
+          className="rounded-2xl overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl"
           style={{
             background: "var(--card-bg)",
             border: "1px solid var(--card-border)",
-            boxShadow: "var(--card-shadow)",
           }}
         >
           {/* Image Container */}
-          <div
-            className="relative h-48 overflow-hidden"
-            style={{ backgroundColor: "#e5e7eb" }}
-          >
+          <div className="relative h-48 overflow-hidden">
             <img
               src={imageSrc}
               alt={recipe.name}
               onError={handleImageError}
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                transition: "transform 0.5s",
-              }}
-              className="group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
 
-            {/* Badges */}
-            <div className="absolute top-4 left-4 flex gap-2 z-20">
-              <span
-                className="px-3 py-1 rounded-full text-xs font-medium text-white backdrop-blur-sm"
-                style={{ background: "rgba(0,0,0,0.5)" }}
-              >
-                {recipe.country}
-              </span>
-            </div>
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
-            <div className="absolute top-4 right-4 z-20">
-              <span
-                className="px-3 py-1 rounded-full text-xs font-medium text-white"
-                style={{ background: difficultyColors[recipe.difficulty] }}
-              >
-                {recipe.difficulty}
-              </span>
-            </div>
+            {/* Country Badge */}
+            <span
+              className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-medium text-white"
+              style={{
+                background: "rgba(0,0,0,0.6)",
+                backdropFilter: "blur(4px)",
+              }}
+            >
+              {recipe.country}
+            </span>
+
+            {/* Difficulty Badge */}
+            <span
+              className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium text-white"
+              style={{ background: difficultyColors[recipe.difficulty] }}
+            >
+              {recipe.difficulty}
+            </span>
 
             {/* Cook Time */}
-            <div className="absolute bottom-4 left-4 flex items-center gap-2 z-20">
-              <span className="text-white text-sm">⏱️ {recipe.cookTime}</span>
-            </div>
+            <span className="absolute bottom-3 left-3 text-white text-sm flex items-center gap-1.5">
+              <Clock size={14} strokeWidth={2} />
+              {recipe.cookTime}
+            </span>
           </div>
 
           {/* Content */}
-          <div className="p-5">
+          <div className="p-4">
             <h3
-              className="text-lg font-semibold mb-2 line-clamp-1"
+              className="text-lg font-bold mb-1 line-clamp-1"
               style={{
                 fontFamily: "var(--font-serif)",
                 color: "var(--foreground)",
@@ -103,20 +97,20 @@ export default function RecipeCard({ recipe, index }: RecipeCardProps) {
               {recipe.name}
             </h3>
             <p
-              className="text-sm line-clamp-2 mb-4"
+              className="text-sm line-clamp-2 mb-3"
               style={{ color: "var(--foreground-secondary)" }}
             >
               {recipe.description}
             </p>
 
             {/* Tags */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {recipe.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="px-2 py-1 rounded-md text-xs"
+                  className="px-2 py-0.5 rounded text-xs"
                   style={{
-                    background: "var(--background)",
+                    background: "var(--background-secondary)",
                     color: "var(--foreground-secondary)",
                   }}
                 >
@@ -125,8 +119,8 @@ export default function RecipeCard({ recipe, index }: RecipeCardProps) {
               ))}
             </div>
           </div>
-        </article>
+        </div>
       </Link>
-    </div>
+    </motion.div>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { getRecipeSuggestions } from "@/data/recipes";
+import { Search } from "lucide-react";
 
 interface SearchBarProps {
   onClose?: () => void;
@@ -66,7 +67,7 @@ export default function SearchBar({
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : prev
+        prev < suggestions.length - 1 ? prev + 1 : prev,
       );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
@@ -88,7 +89,12 @@ export default function SearchBar({
             borderRadius: "9999px",
           }}
         >
-          <span className="pl-4 text-sm">🔍</span>
+          <span className="pl-4">
+            <Search
+              size={16}
+              style={{ color: "var(--foreground-secondary)" }}
+            />
+          </span>
           <input
             ref={inputRef}
             type="text"
