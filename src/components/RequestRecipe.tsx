@@ -108,37 +108,53 @@ export default function RequestRecipe({
 
       try {
         if (EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID) {
-          const templateParams = {
+          const adminParams = {
             dish_name: dishName,
             country: selectedCountry,
             user_email: email,
+            reply_to: email, // Admin should reply to user
             message: message || "No message",
+            from_name: "WorldFeast Team",
           };
 
           // Send notification to admin
           await emailjs.send(
             EMAILJS_SERVICE_ID,
             EMAILJS_TEMPLATE_ID,
-            templateParams,
+            adminParams,
             EMAILJS_PUBLIC_KEY,
           );
 
-          // Send auto-reply to user
+          // mark as success immediately if admin email works
+          setSubmitStatus("success");
+          setDishName("");
+          setSelectedCountry("");
+          setEmail("");
+          setMessage("");
+
+          // Send auto-reply to user (fire and forget / separate error handling)
           if (EMAILJS_AUTOREPLY_TEMPLATE_ID) {
-            await emailjs.send(
-              EMAILJS_SERVICE_ID,
-              EMAILJS_AUTOREPLY_TEMPLATE_ID,
-              templateParams,
-              EMAILJS_PUBLIC_KEY,
-            );
+            try {
+              const autoReplyParams = {
+                ...adminParams,
+                to_email: email, // Explicitly send to user
+                reply_to: "support@worldfeast.com", // Or keep empty/generic
+              };
+
+              await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_AUTOREPLY_TEMPLATE_ID,
+                autoReplyParams,
+                EMAILJS_PUBLIC_KEY,
+              );
+            } catch (autoReplyError) {
+              console.error("Auto-reply failed to send:", autoReplyError);
+              // We don't change submitStatus to error here because the main request succeeded
+            }
           }
         }
-        setSubmitStatus("success");
-        setDishName("");
-        setSelectedCountry("");
-        setEmail("");
-        setMessage("");
-      } catch {
+      } catch (error) {
+        console.error("Failed to send request:", error);
         setSubmitStatus("error");
       } finally {
         setIsSubmitting(false);
