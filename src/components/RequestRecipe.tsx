@@ -21,6 +21,8 @@ import {
 const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "";
 const EMAILJS_TEMPLATE_ID =
   process.env.NEXT_PUBLIC_EMAILJS_CONTACT_TEMPLATE_ID || "";
+const EMAILJS_AUTOREPLY_TEMPLATE_ID =
+  process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID || "";
 const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "";
 
 // Get all unique countries
@@ -106,17 +108,30 @@ export default function RequestRecipe({
 
       try {
         if (EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID) {
+          const templateParams = {
+            dish_name: dishName,
+            country: selectedCountry,
+            user_email: email,
+            message: message || "No message",
+          };
+
+          // Send notification to admin
           await emailjs.send(
             EMAILJS_SERVICE_ID,
             EMAILJS_TEMPLATE_ID,
-            {
-              dish_name: dishName,
-              country: selectedCountry,
-              user_email: email,
-              message: message || "No message",
-            },
+            templateParams,
             EMAILJS_PUBLIC_KEY,
           );
+
+          // Send auto-reply to user
+          if (EMAILJS_AUTOREPLY_TEMPLATE_ID) {
+            await emailjs.send(
+              EMAILJS_SERVICE_ID,
+              EMAILJS_AUTOREPLY_TEMPLATE_ID,
+              templateParams,
+              EMAILJS_PUBLIC_KEY,
+            );
+          }
         }
         setSubmitStatus("success");
         setDishName("");
